@@ -1,0 +1,36 @@
+version: '3.3'
+
+services:
+  blog:
+    image: wordpress:4.9-php7.1-apache
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    environment:
+      - WORDPRESS_DB_HOST=database
+    env_file:
+      - wordpress.env
+    volumes:
+      - www:/var/www/html
+
+  database:
+    image: mariadb:10.3
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
+    env_file:
+      - mysql.env
+
+  admin:
+    image: phpmyadmin/phpmyadmin:4.7
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=database
+    env_file:
+      - mysql.env
+    ports:
+      - 8081:80
+
+volumes:
+  db: ~
+  www: ~
